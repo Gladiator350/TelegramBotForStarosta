@@ -1,25 +1,20 @@
-﻿# Сборка приложения
+﻿# Build stage
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Копируем только файл проекта для оптимизации кэша
-COPY ["TelegramBotStarosta/TelegramBotStarosta.csproj", "TelegramBotStarosta/"]
-RUN dotnet restore "TelegramBotStarosta/TelegramBotStarosta.csproj"
+COPY ["*.csproj", "."]
+RUN dotnet restore
 
-# Копируем остальные файлы
 COPY . .
+RUN dotnet publish -c Release -o /app/publish
 
-# Публикуем приложение
-RUN dotnet publish "TelegramBotStarosta/TelegramBotStarosta.csproj" \
-    -c Release \
-    -o /app/publish
-
-# Финальный образ
+# Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 
-# Копируем результат публикации
-COPY --from=build /app/publish .
+ENV ASPNETCORE_URLS=http://+:10000 \
+    DOTNET_ENVIRONMENT=Production
+EXPOSE 10000
 
-# Запускаем приложение
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "TelegramBotStarosta.dll"]
