@@ -7,8 +7,8 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 // Конфигурация
-var botToken = Environment.GetEnvironmentVariable("8107055966:AAEyU-mnIvNK-J2hDxQJ3bno1z5PAiHCf7Q")!;
-var apiUrl = Environment.GetEnvironmentVariable("https://telegram-bot-starosta-backend.onrender.com/api/v1/schedule/currentDay?groupName=М3О-303С-22")!;
+var botToken = "8107055966:AAEyU-mnIvNK-J2hDxQJ3bno1z5PAiHCf7Q";
+var apiUrl = "https://telegram-bot-starosta-backend.onrender.com/api/v1";
 var adminWhitelist = new List<long> { 1563759837, 960762871 };
 var userChatIds = new HashSet<long>();
 var httpClient = new HttpClient();
