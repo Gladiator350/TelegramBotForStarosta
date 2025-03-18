@@ -1,12 +1,10 @@
-﻿# Сборка
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 COPY . .
-RUN dotnet restore
-RUN dotnet publish -c Release -o /app/publish
+RUN dotnet restore "TelegramBotStarosta.csproj"
+RUN dotnet publish "TelegramBotStarosta.csproj" -c Release -o /app/publish  # Явное указание проекта
 
-# Запуск
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
-ENTRYPOINT ["dotnet", "TelegramBuffordStronts.dll"]
+ENTRYPOINT ["dotnet", "TelegramBotStarosta.dll"]
