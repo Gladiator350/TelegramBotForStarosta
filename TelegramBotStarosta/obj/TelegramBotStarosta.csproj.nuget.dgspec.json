@@ -46,11 +46,11 @@
             },
             "System.Text.Json": {
               "target": "Package",
-              "version": "[8.0.0, )"
+              "version": "[8.0.5, )"
             },
             "Telegram.Bot": {
               "target": "Package",
-              "version": "[20.0.0, )"
+              "version": "[22.0.0, )"
             }
           },
           "imports": [
