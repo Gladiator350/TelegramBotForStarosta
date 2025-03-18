@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -28,6 +29,8 @@ var deadlines = new List<DeadlineItem>
 };
 
 botClient.StartReceiving(UpdateHandler, ErrorHandler);
+var logger = LoggerFactory.Create(builder => builder.AddConsole()).CreateLogger<Program>();
+logger.LogInformation("Приложение запущено");
 
 async Task UpdateHandler(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
 {
