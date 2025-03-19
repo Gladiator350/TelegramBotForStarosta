@@ -162,7 +162,7 @@ public class BotBackgroundService : BackgroundService
         return command switch
         {
             "/start" => GetWelcomeMessage(),
-            "/scheduleWeek" => await GetScheduleWeek(),
+            "Расписание на неделю" => await GetScheduleWeek(),
             "📝 дедлайны" => GetDeadlines(),
             "❓ помощь" => GetHelpMessage(IsAdmin(chatId)),
             "/help" => GetHelpMessage(IsAdmin(chatId)),
@@ -248,7 +248,7 @@ public class BotBackgroundService : BackgroundService
     {
         if (schedule.Count == 0) return "📭 Расписание на неделю отсутствует";
 
-        return schedule.Aggregate("<b>📅 Расписание на неделю:</b>\n\n", (current, item) => current + $"""
+        return schedule.Aggregate("<b>📅 Расписание на сегодня:</b>\n\n", (current, item) => current + $"""
             📚 <i>{item.SubjectName}</i>
             🕒 {item.StartTime[..5]}-{item.EndTime[..5]}
             🏫 Ауд. {item.Classroom}
@@ -378,7 +378,7 @@ public class BotBackgroundService : BackgroundService
     {
         return new ReplyKeyboardMarkup(new[]
         {
-            new[] { new KeyboardButton("/schedule") },
+            new[] { new KeyboardButton("Расписание на неделю") },
             new[]{new KeyboardButton("/scheduleWeek") },
             new[] { new KeyboardButton("📝 Дедлайны"), new KeyboardButton("❓ Помощь") }
         })
