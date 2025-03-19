@@ -18,3 +18,5 @@ C:\Users\ADprogrammer\RiderProjects\TelegramBotStarosta\TelegramBotStarosta\obj\
 C:\Users\ADprogrammer\RiderProjects\TelegramBotStarosta\TelegramBotStarosta\obj\Debug\net8.0\ref\TelegramBotStarosta.dll
 C:\Users\ADprogrammer\RiderProjects\TelegramBotStarosta\TelegramBotStarosta\bin\Debug\net8.0\Newtonsoft.Json.dll
 C:\Users\ADprogrammer\RiderProjects\TelegramBotStarosta\TelegramBotStarosta\bin\Debug\net8.0\Telegram.Bot.Framework.dll
+C:\Users\ADprogrammer\RiderProjects\TelegramBotStarosta\TelegramBotStarosta\bin\Debug\net8.0\Polly.dll
+C:\Users\ADprogrammer\RiderProjects\TelegramBotStarosta\TelegramBotStarosta\bin\Debug\net8.0\Polly.Core.dll
