@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "l5pxKuB3wBjPJ+SwZz7dzLAbvi+DX54FME312xSfFX2YYeMF5xVYUo8sZvKU1bhHcdTaw7IYfs26vsFvH6SM+w==",
+  "dgSpecHash": "CtFSJ3Nm0RHu95PR0b/0/3fslbiN4Q5qU5X4IHmeErdlujrjXOEmJmRHGLR6QA1liDIqf+Klndr+oqqoC4dn/A==",
   "success": true,
   "projectFilePath": "C:\\Users\\ADprogrammer\\RiderProjects\\TelegramBotStarosta\\TelegramBotStarosta\\TelegramBotStarosta.csproj",
   "expectedPackageFiles": [
@@ -28,6 +28,8 @@
     "C:\\Users\\ADprogrammer\\.nuget\\packages\\microsoft.win32.primitives\\4.3.0\\microsoft.win32.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\ADprogrammer\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
     "C:\\Users\\ADprogrammer\\.nuget\\packages\\newtonsoft.json\\10.0.3\\newtonsoft.json.10.0.3.nupkg.sha512",
+    "C:\\Users\\ADprogrammer\\.nuget\\packages\\polly\\8.5.2\\polly.8.5.2.nupkg.sha512",
+    "C:\\Users\\ADprogrammer\\.nuget\\packages\\polly.core\\8.5.2\\polly.core.8.5.2.nupkg.sha512",
     "C:\\Users\\ADprogrammer\\.nuget\\packages\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
     "C:\\Users\\ADprogrammer\\.nuget\\packages\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
     "C:\\Users\\ADprogrammer\\.nuget\\packages\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.fedora.24-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",

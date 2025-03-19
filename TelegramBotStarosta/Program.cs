@@ -8,6 +8,7 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Polly;
 
 // Конфигурация
 var botToken = "8107055966:AAEyU-mnIvNK-J2hDxQJ3bno1z5PAiHCf7Q";
@@ -106,21 +107,19 @@ string GetHelpMessage(bool isAdmin) => isAdmin
 
 async Task<string> GetSchedule()
 {
-    try
+    var retryPolicy = Policy
+        .Handle<HttpRequestException>()
+        .WaitAndRetryAsync(3, retryAttempt => 
+            TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+
+    return await retryPolicy.ExecuteAsync(async () =>
     {
         var response = await httpClient.GetAsync($"{apiUrl}/currentDay?groupName=М3О-303С-22");
-        if (!response.IsSuccessStatusCode) return "❌ Ошибка получения расписания";
-
+        response.EnsureSuccessStatusCode();
         var json = await response.Content.ReadAsStringAsync();
         var schedule = JsonSerializer.Deserialize<List<ScheduleItem>>(json);
-        
         return FormatSchedule(schedule ?? new List<ScheduleItem>());
-    }
-    catch (Exception ex)
-    {
-        logger.LogError(ex, "Schedule error");
-        return "⏳ Сервис расписания временно недоступен";
-    }
+    });
 }
 
 string FormatSchedule(List<ScheduleItem> schedule)
