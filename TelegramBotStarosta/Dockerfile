@@ -2,8 +2,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-COPY ["TelegramBotStarosta.csproj", "."]
-RUN dotnet restore "TelegramBotStarosta.csproj"
+COPY ["TelegramBotStarosta/TelegramBotStarosta.csproj", "."]
+RUN dotnet restore "TelegramBotStarosta/TelegramBotStarosta.csproj"
 
 COPY . .
 RUN dotnet publish -c Release -o /app/publish
