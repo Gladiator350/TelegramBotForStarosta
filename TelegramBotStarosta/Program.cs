@@ -114,7 +114,7 @@ async Task<string> GetSchedule()
 
     return await retryPolicy.ExecuteAsync(async () =>
     {
-        var response = await httpClient.GetAsync($"{apiUrl}/currentDay?groupName=М3О-303С-22");
+        var response = await httpClient.GetAsync($"{apiUrl}/schedule/week?groupName=М3О-303С-22"); // /schedule/week?groupName=М3О-303С-22
         response.EnsureSuccessStatusCode();
         var json = await response.Content.ReadAsStringAsync();
         var schedule = JsonSerializer.Deserialize<List<ScheduleItem>>(json);
