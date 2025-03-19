@@ -162,7 +162,7 @@ public class BotBackgroundService : BackgroundService
         return command switch
         {
             "/start" => GetWelcomeMessage(),
-            "Расписание на неделю" => await GetScheduleWeek(),
+            "/scheduleWeek" => await GetScheduleWeek(),
             "📝 дедлайны" => GetDeadlines(),
             "❓ помощь" => GetHelpMessage(IsAdmin(chatId)),
             "/help" => GetHelpMessage(IsAdmin(chatId)),
@@ -378,7 +378,7 @@ public class BotBackgroundService : BackgroundService
     {
         return new ReplyKeyboardMarkup(new[]
         {
-            new[] { new KeyboardButton("Расписание на неделю") },
+            new[] { new KeyboardButton("/schedule") },
             new[]{new KeyboardButton("/scheduleWeek") },
             new[] { new KeyboardButton("📝 Дедлайны"), new KeyboardButton("❓ Помощь") }
         })
