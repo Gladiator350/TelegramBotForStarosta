@@ -51,6 +51,10 @@
             "Telegram.Bot": {
               "target": "Package",
               "version": "[22.0.0, )"
+            },
+            "Telegram.Bot.Framework": {
+              "target": "Package",
+              "version": "[1.1.4, )"
             }
           },
           "imports": [

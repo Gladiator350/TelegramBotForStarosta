@@ -2,21 +2,19 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# 1. Копируем файлы проекта
-COPY ["TelegramBotStarosta/TelegramBotStarosta.csproj", "TelegramBotStarosta/"]
-COPY ["TelegramBotStarosta.sln", "."]
+COPY ["TelegramBotStarosta.csproj", "."]
+RUN dotnet restore "TelegramBotStarosta.csproj"
 
-# 2. Восстанавливаем зависимости
-RUN dotnet restore "TelegramBotStarosta.sln"
-
-# 3. Копируем весь код
 COPY . .
-
-# 4. Собираем релиз
 RUN dotnet publish -c Release -o /app/publish
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
+
+ENV ASPNETCORE_URLS=http://+:10000 \
+    DOTNET_ENVIRONMENT=Production
+EXPOSE 10000
+
 COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "TelegramBotStarosta.dll"]

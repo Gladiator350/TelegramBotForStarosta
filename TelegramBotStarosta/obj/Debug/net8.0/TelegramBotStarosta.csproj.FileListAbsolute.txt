@@ -16,3 +16,5 @@ C:\Users\ADprogrammer\RiderProjects\TelegramBotStarosta\TelegramBotStarosta\obj\
 C:\Users\ADprogrammer\RiderProjects\TelegramBotStarosta\TelegramBotStarosta\obj\Debug\net8.0\TelegramBotStarosta.pdb
 C:\Users\ADprogrammer\RiderProjects\TelegramBotStarosta\TelegramBotStarosta\obj\Debug\net8.0\TelegramBotStarosta.genruntimeconfig.cache
 C:\Users\ADprogrammer\RiderProjects\TelegramBotStarosta\TelegramBotStarosta\obj\Debug\net8.0\ref\TelegramBotStarosta.dll
+C:\Users\ADprogrammer\RiderProjects\TelegramBotStarosta\TelegramBotStarosta\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\Users\ADprogrammer\RiderProjects\TelegramBotStarosta\TelegramBotStarosta\bin\Debug\net8.0\Telegram.Bot.Framework.dll
