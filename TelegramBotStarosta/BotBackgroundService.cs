@@ -376,15 +376,20 @@ public class BotBackgroundService : BackgroundService
 
     private IReplyMarkup GetMainKeyboard()
     {
-        return new ReplyKeyboardMarkup(new[]
+        return new InlineKeyboardMarkup(new[]
         {
-            new[] { new KeyboardButton("/schedule") },
-            new[]{new KeyboardButton("/scheduleWeek") },
-            new[] { new KeyboardButton("📝 Дедлайны"), new KeyboardButton("❓ Помощь") }
-        })
-        {
-            ResizeKeyboard = true,
-            Selective = true
-        };
+            // Первая строка кнопок
+            new[]
+            {
+                InlineKeyboardButton.WithCallbackData("📅 Расписание на сегодня", "/schedule"),
+                InlineKeyboardButton.WithCallbackData("📅 Расписание на неделю", "/scheduleWeek")
+            },
+            // Вторая строка кнопок
+            new[]
+            {
+                InlineKeyboardButton.WithCallbackData("📝 Дедлайны", "/deadlines"),
+                InlineKeyboardButton.WithCallbackData("❓ Помощь", "/help")
+            }
+        });
     }
 }
