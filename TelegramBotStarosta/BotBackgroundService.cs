@@ -142,7 +142,7 @@ public class BotBackgroundService : BackgroundService
 
     private async Task<string> ProcessCommand(string message, long chatId)
     {
-        var command = message.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries)[0];
+        var command = message;
 
         // Ограничиваем выполнение команды /schedule не чаще одного раза за CooldownSeconds
         if (command == "/schedule")
@@ -162,11 +162,11 @@ public class BotBackgroundService : BackgroundService
         return command switch
         {
             "/start" => GetWelcomeMessage(),
-            "/scheduleWeek" => await GetScheduleWeek(),
+            "Расписание на неделю" => await GetScheduleWeek(),
             "📝 дедлайны" => GetDeadlines(),
             "❓ помощь" => GetHelpMessage(IsAdmin(chatId)),
             "/help" => GetHelpMessage(IsAdmin(chatId)),
-            "/schedule" => await GetSchedule(),
+            "Распписание на сегодня" => await GetSchedule(),
             "/deadlines" => GetDeadlines(),
             "/notify" => ProcessNotification(message),
             "/broadcast" when IsAdmin(chatId) => await ProcessBroadcast(message),
@@ -376,20 +376,16 @@ public class BotBackgroundService : BackgroundService
 
     private IReplyMarkup GetMainKeyboard()
     {
-        return new InlineKeyboardMarkup(new[]
+        return new ReplyKeyboardMarkup(new[]
         {
-            // Первая строка кнопок
-            new[]
-            {
-                InlineKeyboardButton.WithCallbackData("📅 Расписание на сегодня", "/schedule"),
-                InlineKeyboardButton.WithCallbackData("📅 Расписание на неделю", "/scheduleWeek")
-            },
-            // Вторая строка кнопок
-            new[]
-            {
-                InlineKeyboardButton.WithCallbackData("📝 Дедлайны", "/deadlines"),
-                InlineKeyboardButton.WithCallbackData("❓ Помощь", "/help")
-            }
-        });
+            new[] { new KeyboardButton("Распписание на сегодня") },
+            new[]{new KeyboardButton("Расписание на неделю") },
+            new[] { new KeyboardButton("📝 Дедлайны"),
+                new KeyboardButton("❓ Помощь") }
+        })
+        {
+            ResizeKeyboard = true,
+            Selective = true
+        };
     }
 }
