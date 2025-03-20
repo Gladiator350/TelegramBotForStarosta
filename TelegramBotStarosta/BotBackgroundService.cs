@@ -170,7 +170,7 @@ public class BotBackgroundService : BackgroundService
             "/deadlines" => GetDeadlines(),
             "/notify" => ProcessNotification(message),
             "/broadcast" when IsAdmin(chatId) => await ProcessBroadcast(message),
-            _ => "⚠️ Неизвестная команда. Используйте /help"
+            _ => "⚠️ Неизвестная команда. Используйте /help "
         };
     }
 
