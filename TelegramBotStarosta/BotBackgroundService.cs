@@ -54,7 +54,7 @@ public class BotBackgroundService : BackgroundService
             while (!stoppingToken.IsCancellationRequested)
             {
                 await UpdateScheduleAsync();
-                await Task.Delay(TimeSpan.FromMinutes(10), stoppingToken);
+                await Task.Delay(TimeSpan.FromMinutes(3), stoppingToken);
             }
         }, stoppingToken);
 
