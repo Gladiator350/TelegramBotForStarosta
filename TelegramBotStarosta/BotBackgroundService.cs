@@ -300,7 +300,6 @@ public class BotBackgroundService : BackgroundService
         "LAB" => "Лабораторная",
         _ => "Занятие"
     };
-
     private string GetDeadlines()
     {
         if (_cache.TryGetValue("deadlines", out string cachedDeadlines))
