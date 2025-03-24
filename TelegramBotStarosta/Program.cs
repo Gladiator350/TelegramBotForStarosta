@@ -1,29 +1,12 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.Extensions.Logging;
+﻿using System.Text.Json.Serialization;
 using Telegram.Bot;
-using Telegram.Bot.Exceptions;
-using Telegram.Bot.Polling;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
-using Polly;
-using Microsoft.Extensions.Caching.Memory;
-using System.Collections.Concurrent;
-using System.Globalization;
-using System.Net;
-using System.Text;
-using System.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Telegram.Bot.Types.ReplyMarkups;
 
 // Конфигурация
 var botToken = "8107055966:AAEyU-mnIvNK-J2hDxQJ3bno1z5PAiHCf7Q";
 var apiUrl = "https://telegram-bot-starosta-backend.onrender.com/api/v1/schedule";
-var adminWhitelist = new List<long> { 1563759837, 960762871 };
-var userChatIds = new HashSet<long>();
-var httpClient = new HttpClient();
 var builder = WebApplication.CreateBuilder(args);
 
 // Регистрируем зависимости

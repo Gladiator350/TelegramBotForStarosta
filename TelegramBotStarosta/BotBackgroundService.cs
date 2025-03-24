@@ -58,13 +58,13 @@ public class BotBackgroundService : BackgroundService
             }
         }, stoppingToken);
 
-        // Настройка обработки сообщений
+        // Настройка обработки сообщений и callback-запросов
         _botClient.StartReceiving(
             updateHandler: HandleUpdateAsync,
             HandlePollingErrorAsync,
             receiverOptions: new ReceiverOptions
             {
-                AllowedUpdates = new[] { UpdateType.Message },
+                AllowedUpdates = new[] { UpdateType.Message, UpdateType.CallbackQuery }, // Разрешаем обработку callback-запросов
             },
             cancellationToken: stoppingToken
         );
@@ -109,18 +109,23 @@ public class BotBackgroundService : BackgroundService
     {
         try
         {
-            if (update.Message is not { Text: { } messageText, Chat: { } chat }) return;
+            if (update.Message is not { Text: { } messageText, Chat: { } chat, From: {} user }) return;
 
             _logger.LogInformation($"Received: '{messageText}' from {chat.Id}");
             _userChatIds.Add(chat.Id);
 
-            var response = await ProcessCommand(messageText, chat.Id);
-            await botClient.SendTextMessageAsync(
-                chat.Id,
-                response,
-                parseMode: ParseMode.Html,
-                replyMarkup: GetMainKeyboard() // Добавляем клавиатуру
-            );
+            var response = await ProcessCommand(messageText, chat.Id, user);
+            if (response is (string text, InlineKeyboardMarkup keyboard))
+            {
+                // Отправляем сообщение с клавиатурой
+                await botClient.SendTextMessageAsync(
+                    chat.Id,
+                    text,
+                    parseMode: ParseMode.Html,
+                    replyMarkup: keyboard,
+                    cancellationToken: ct
+                );
+            }
         }
         catch (Exception ex)
         {
@@ -135,12 +140,44 @@ public class BotBackgroundService : BackgroundService
             ApiRequestException apiEx => $"Telegram API Error ({apiEx.ErrorCode}): {apiEx.Message}",
             _ => exception.ToString()
         };
-
         _logger.LogError(errorMessage);
         return Task.CompletedTask;
     }
+    private async Task HandleCallbackQueryAsync(ITelegramBotClient botClient, CallbackQuery callbackQuery, CancellationToken ct)
+    {
+        try
+        {
+            var chatId = callbackQuery.Message.Chat.Id;
+            var data = callbackQuery.Data;
 
-    private async Task<string> ProcessCommand(string message, long chatId)
+            string responseText = data switch
+            {
+                "tomorrow" => "Вы выбрали: Завтра",
+                "day_after_tomorrow" => "Вы выбрали: Послезавтра",
+                _ => "Неизвестная команда"
+            };
+
+            // Отправляем ответ пользователю
+            await botClient.SendTextMessageAsync(
+                chatId,
+                responseText,
+                parseMode: ParseMode.Html,
+                cancellationToken: ct
+            );
+
+            // Уведомляем Telegram, что запрос обработан
+            await botClient.AnswerCallbackQueryAsync(
+                callbackQuery.Id,
+                cancellationToken: ct
+            );
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error handling callback query");
+        }
+    }
+
+    private async Task<(string text, InlineKeyboardMarkup? keyboard)> ProcessCommand(string message, long chatId, User user)
     {
         var command = message;
 
@@ -153,28 +190,29 @@ public class BotBackgroundService : BackgroundService
                 if (false/*DateTime.UtcNow < nextAllowedTime*/)
                 {
                     var remaining = (int)(nextAllowedTime - DateTime.UtcNow).TotalSeconds;
-                    return $"⏳ Пожалуйста, подождите {remaining} секунд перед повторным использованием команды.";
+                    return ($"⏳ Пожалуйста, подождите {remaining} секунд перед повторным использованием команды.", null);
                 }
             }
             _lastCommandUsage[(chatId, command)] = DateTime.UtcNow;
         }
-
-        return command switch
+        var inlineKeyboard = new InlineKeyboardMarkup(new[]
         {
-            "/start" => GetWelcomeMessage(),
-            "Расписание на неделю" => await GetScheduleWeek(),
-            "📝 дедлайны" => GetDeadlines(),
-            "❓ помощь" => GetHelpMessage(IsAdmin(chatId)),
-            "/help" => GetHelpMessage(IsAdmin(chatId)),
-            "Распписание на сегодня" => await GetSchedule(),
-            "/deadlines" => GetDeadlines(),
-            "/notify" => ProcessNotification(message),
-            "/broadcast" when IsAdmin(chatId) => await ProcessBroadcast(message),
-            _ => "⚠️ Неизвестная команда. Используйте /help "
-        };
+            new[]
+            {
+                InlineKeyboardButton.WithCallbackData("Помощь", "❓ помощь"),
+            }
+        });
+        if (command.Contains("/start")) return await GetStartWithKeyboard(user);
+        if (command.Contains("Расписание на сегодня")) return await GetScheduleWithKeyboard();
+        if (command.Contains("Расписание на неделю")) return (await GetScheduleWeek(), null);
+        if (command.Contains("📝 дедлайны")) return (GetDeadlines(), null);
+        if (command.Contains("❓ помощь")) return (GetHelpMessage(IsAdmin(chatId), user), null);
+        if (command.Contains("/notify")) return (ProcessNotification(message.Split(' ')[1]), null);
+        if (command.Contains("/broadcast") && IsAdmin(chatId)) return (await ProcessBroadcast(message.Split(' ')[1]), null);
+        return ("⚠️ Неизвестная команда. Используйте /help ", null);
     }
 
-    private string GetWelcomeMessage() => """
+    private string GetWelcomeMessage(User user) => """
         <b>🎓 Бот старосты группы М3О-303С-22</b>
         
         <i>Доступные команды:</i>
@@ -183,14 +221,28 @@ public class BotBackgroundService : BackgroundService
         /notify [причина] - Уведомить о пропуске
         /help - Справка по командам
         """;
+    private async Task<(string StaertText, InlineKeyboardMarkup Keyboard)> GetStartWithKeyboard(User user)
+    {
+        var scheduleText = GetWelcomeMessage(user);
 
-    private string GetHelpMessage(bool isAdmin) => isAdmin
+        // Создаем inline-клавиатуру
+        var inlineKeyboard = new InlineKeyboardMarkup(new[]
+        {
+            new[]
+            {
+                InlineKeyboardButton.WithCallbackData("Зарегестрироваться", "tomorrow"),
+            }
+        });
+
+        return (scheduleText, inlineKeyboard);
+    }
+    private string GetHelpMessage(bool isAdmin, User user) => isAdmin
         ? """
           <b>👑 Админ-команды:</b>
           /broadcast [сообщение] - Рассылка всем пользователям
           
-          """ + GetWelcomeMessage()
-        : GetWelcomeMessage();
+          """ + GetWelcomeMessage(user)
+        : GetWelcomeMessage(user);
 
     private async Task<string> GetSchedule()
     {
@@ -216,6 +268,22 @@ public class BotBackgroundService : BackgroundService
 
         _cache.Set("schedule", scheduleString, GetTimeUntilMidnightUTC());
         return scheduleString;
+    }
+    private async Task<(string ScheduleText, InlineKeyboardMarkup Keyboard)> GetScheduleWithKeyboard()
+    {
+        var scheduleText = await GetSchedule();
+
+        // Создаем inline-клавиатуру
+        var inlineKeyboard = new InlineKeyboardMarkup(new[]
+        {
+            new[]
+            {
+                InlineKeyboardButton.WithCallbackData("Завтра", "tomorrow"),
+                InlineKeyboardButton.WithCallbackData("Послезавтра", "day_after_tomorrow")
+            }
+        });
+
+        return (scheduleText, inlineKeyboard);
     }
 
     private async Task<string> GetScheduleWeek()
